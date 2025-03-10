@@ -451,7 +451,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 # Sidebar with Unimed logo
 with st.sidebar:
-    st.sidebar.image("/home/nicholas10/dash/unimed.png", width=300)
+    st.sidebar.image("unimed.png", width=300)
 
     st.markdown(
     """
