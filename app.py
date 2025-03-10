@@ -878,3 +878,76 @@ st.dataframe(alertas, use_container_width=True, hide_index=True)
 st.markdown("""
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 """, unsafe_allow_html=True)
+
+# Add these CSS overrides to your existing st.markdown styling section
+
+st.markdown("""
+<style>
+    /* Fix for light mode placeholders */
+    .stPlaceholder [data-testid="stMarkdownContainer"] {
+        color: rgba(0, 0, 0, 0.6) !important;
+    }
+    
+    /* Fix for date inputs - forcibly override dark mode */
+    .stDateInput div[data-baseweb="input"] {
+        background-color: white !important;
+        color: #2c3e50 !important;
+    }
+    
+    .stDateInput div[data-baseweb="input"] input {
+        color: #2c3e50 !important;
+    }
+
+    /* Calendar popup fixes */
+    div[data-baseweb="calendar"] {
+        background-color: white !important;
+    }
+    
+    div[data-baseweb="calendar"] button {
+        color: #2c3e50 !important;
+    }
+    
+    /* Fix for dataframes in light mode */
+    .stDataFrame {
+        background-color: white !important;
+    }
+    
+    .stDataFrame div[data-testid="stTable"] {
+        background-color: white !important;
+    }
+    
+    .stDataFrame th {
+        background-color: #f8f9fa !important;
+        color: #2c3e50 !important;
+    }
+    
+    .stDataFrame td {
+        background-color: white !important;
+        color: #2c3e50 !important;
+    }
+    
+    /* Fix tooltips, buttons and other interactive elements */
+    div[data-baseweb="tooltip"] {
+        background-color: white !important;
+        color: #2c3e50 !important;
+    }
+    
+    /* Fix select dropdowns */
+    div[data-baseweb="select"] {
+        background-color: white !important;
+    }
+    
+    div[data-baseweb="popover"] {
+        background-color: white !important;
+    }
+    
+    div[data-baseweb="select"] input {
+        color: #2c3e50 !important;
+    }
+    
+    /* Additional fixes for any remaining dark elements */
+    .stMarkdown, .stText {
+        color: #2c3e50 !important;
+    }
+</style>
+""", unsafe_allow_html=True)
