@@ -556,7 +556,7 @@ for i, question in enumerate(example_questions):
             st.session_state.selected_question = i
             st.session_state.execute_query = True
             # Force a rerun to immediately show the updated state
-            #st.rerun()
+            st.rerun()
 
 # Add CSS to style the selected button
 if st.session_state.selected_question is not None:
