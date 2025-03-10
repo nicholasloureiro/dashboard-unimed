@@ -615,7 +615,7 @@ if api_key:
         st.markdown("</div></div>", unsafe_allow_html=True)
         
         # Reset the execute_query flag after processing
-        st.session_state.execute_query = False
+       # st.session_state.execute_query = False
 else:
     st.error("API Key não encontrada. Configure a variável de ambiente OPENAI_API_KEY.")
 
@@ -788,7 +788,7 @@ with col1:
         try:
             insights_query = """
 
-**"Liste os 6 principais insights dos dados de alertas médicos em português, formatando a resposta em Markdown. Não utilize gráficos.**  
+**"Liste os 10 principais insights dos dados de alertas médicos em português, formatando a resposta em Markdown. Não utilize gráficos.**  
 
 - **Para valores financeiros**, utilize a seguinte formatação:  
   ```python
