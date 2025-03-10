@@ -451,7 +451,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 # Sidebar with Unimed logo
 with st.sidebar:
-    st.sidebar.image("unimed.png", width=300)
+    st.sidebar.image("/home/nicholas10/dash/unimed.png", width=300)
 
     st.markdown(
     """
@@ -878,4 +878,3 @@ st.dataframe(alertas, use_container_width=True, hide_index=True)
 st.markdown("""
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 """, unsafe_allow_html=True)
-
