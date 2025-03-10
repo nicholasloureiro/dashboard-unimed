@@ -491,19 +491,21 @@ if 'query' not in st.session_state:
     st.session_state.query = ""
 if 'selected_question' not in st.session_state:
     st.session_state.selected_question = None
+if 'execute_query' not in st.session_state:
+    st.session_state.execute_query = False
 
 # Define the example questions
 example_questions = [
     "Me mostre onde eu estou perdendo mais receita",
     "Liste os usuários que geram fraudes de maior valor",
-    "Faça um gráfico com os 5 provedores com mais fraudes"
+    "Faça um gráfico com os 5 provedores com mais alertas"
 ]
 
-# Initialize session state if not already set
-if "query" not in st.session_state:
-    st.session_state.query = ""
-if "selected_question" not in st.session_state:
-    st.session_state.selected_question = None
+# Function to set query and trigger execution
+def set_query_and_execute(question, idx):
+    st.session_state.query = question
+    st.session_state.selected_question = idx
+    st.session_state.execute_query = True
 
 # Search bar
 col1, col2 = st.columns([6, 1])
@@ -518,14 +520,15 @@ with col1:
         key="user_query_input"
     )
 
-    # Update session state when input changes
+    # Update session state when input changes directly
     if user_query != st.session_state.query:
         st.session_state.query = user_query
 
 # Place the button in the second column
 with col2:
     search_button = st.button("Perguntar ✨", type="primary")
-
+    if search_button:
+        st.session_state.execute_query = True
 
 # Create columns for example questions (3 per row)
 question_cols = st.columns(3)
@@ -547,10 +550,8 @@ for i, question in enumerate(example_questions):
             use_container_width=True,
             help=f"Clique para perguntar: {question}"
         ):
-            # When clicked:
-            st.session_state.query = question  # Update query
-            st.session_state.selected_question = i  # Mark as selected
-            st.rerun()  # Rerun UI
+            # When clicked, set query and trigger execution
+            set_query_and_execute(question, i)
 
 # Add CSS to style the selected button
 if st.session_state.selected_question is not None:
@@ -582,7 +583,7 @@ if api_key:
         "response_parser": StreamlitResponse  # Adicionando o novo parser
     })
     
-    if user_query and search_button:
+    if user_query and search_button or user_query and (question and i):
         st.markdown("""
         <div class="section">
             <div class="section-header" style="background-color: white; padding: 12px; border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); margin-bottom: 15px; display: flex; align-items: center;">
@@ -598,7 +599,8 @@ if api_key:
             
             # Enviar pergunta ao PandasAI
             # Com o StreamlitResponse configurado, ele já irá renderizar o resultado apropriadamente
-            smart_df.chat(f"Responda em portugues: {user_query}")
+            smart_df.chat(f"""Responda em portugues: {user_query}
+- **Para valores financeiros**, utilize a formatação BRL""")
             # Não precisamos fazer nada adicional aqui, pois o parser já trata a exibição
         except Exception as e:
             st.error(f"Erro ao processar a pergunta: {str(e)}")
@@ -752,8 +754,12 @@ else:
         <div class="kpi-card">
             <div class="kpi-title">RISCO TOTAL</div>
             <div class="kpi-value">R$ {real_br_money_mask(current_risk)}</div>
-            <div class="kpi-trend {'positive' if risk_delta < 0 else 'negative'}">{risk_delta:+} vs período anterior</div>
-        </div>
+            <div class="kpi-trend {'positive' if risk_delta < 0 else 'negative'}">
+    R$ {('{:,.2f}'.format(risk_delta)).replace(',', 'v').replace('.', ',').replace('v', '.')}
+    vs período anterior
+</div>
+
+        
         """, unsafe_allow_html=True)
 
 # Create two columns for side-by-side layout
@@ -770,7 +776,22 @@ with col1:
     
     if api_key:
         try:
-            insights_query = "Liste os principais insights dos dados de alertas médicos, em portugues e em markdown, nao utilie graficos"
+            insights_query = """
+
+**"Liste os principais insights dos dados de alertas médicos em português, formatando a resposta em Markdown. Não utilize gráficos.**  
+
+- **Para valores financeiros**, utilize a seguinte formatação:  
+  ```python
+  a = '{:,.2f}'.format(float(valor_financeiro))  
+  b = a.replace(',', 'v')  
+  c = b.replace('.', ',')  
+  return c.replace('v', '.')  
+  ```  
+- **Inclua informações sobre os alertas ativos, destacando quais pacientes e provedores possuem a maior quantidade de alertas ativos.**"  
+
+
+
+"""
             # Não precisamos armazenar o resultado, pois o parser já trata a exibição
             smart_df.chat(insights_query)
         except Exception as e:
@@ -870,9 +891,16 @@ alertas = df[["alert_type", "description", "risk_value"]].rename(
     columns={"alert_type": "Nome", "description": "Descrição", "risk_value": "Valor em risco"}
 )
 
-# Keep the risk value as a float without formatting
-# This will allow Streamlit to sort and filter the column properly
-st.dataframe(alertas, use_container_width=True, hide_index=True)
+# Format 'Valor em risco' for display
+alertas["Valor em risco (BRL)"] = alertas["Valor em risco"].apply(
+    lambda x: f"R$ {x:,.2f}".replace(",", "v").replace(".", ",").replace("v", ".")
+)
+
+# Ensure numerical sorting by keeping the original float column
+alertas = alertas[["Nome", "Descrição", "Valor em risco", "Valor em risco (BRL)"]]
+
+
+st.dataframe(alertas, column_config={"Valor em risco": None}) 
 
 # Add Font Awesome
 st.markdown("""
