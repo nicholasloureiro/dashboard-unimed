@@ -600,7 +600,8 @@ if api_key:
             # Enviar pergunta ao PandasAI
             # Com o StreamlitResponse configurado, ele já irá renderizar o resultado apropriadamente
             smart_df.chat(f"""Responda em portugues: {user_query}
-- **Para valores financeiros**, utilize a formatação BRL""")
+- **Para valores financeiros**, utilize a formatação BRL, exemplo: R$ 11.279.589,75
+""")
             # Não precisamos fazer nada adicional aqui, pois o parser já trata a exibição
         except Exception as e:
             st.error(f"Erro ao processar a pergunta: {str(e)}")
@@ -778,7 +779,7 @@ with col1:
         try:
             insights_query = """
 
-**"Liste os principais insights dos dados de alertas médicos em português, formatando a resposta em Markdown. Não utilize gráficos.**  
+**"Liste os 6 principais insights dos dados de alertas médicos em português, formatando a resposta em Markdown. Não utilize gráficos.**  
 
 - **Para valores financeiros**, utilize a seguinte formatação:  
   ```python
