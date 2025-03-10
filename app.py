@@ -551,7 +551,12 @@ for i, question in enumerate(example_questions):
             help=f"Clique para perguntar: {question}"
         ):
             # When clicked, set query and trigger execution
-            set_query_and_execute(question, i)
+            #set_query_and_execute(question, i)
+            st.session_state.query = question
+            st.session_state.selected_question = i
+            st.session_state.execute_query = True
+            # Force a rerun to immediately show the updated state
+            st.rerun()
 
 # Add CSS to style the selected button
 if st.session_state.selected_question is not None:
@@ -583,7 +588,7 @@ if api_key:
         "response_parser": StreamlitResponse  # Adicionando o novo parser
     })
     
-    if user_query and search_button or user_query and (question and i):
+    if user_query and (search_button or st.session_state.execute_query):
         st.markdown("""
         <div class="section">
             <div class="section-header" style="background-color: white; padding: 12px; border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); margin-bottom: 15px; display: flex; align-items: center;">
@@ -607,6 +612,7 @@ if api_key:
             st.error(f"Erro ao processar a pergunta: {str(e)}")
             
         st.markdown("</div></div>", unsafe_allow_html=True)
+        st.session_state.execute_query = False
 else:
     st.error("API Key não encontrada. Configure a variável de ambiente OPENAI_API_KEY.")
 
