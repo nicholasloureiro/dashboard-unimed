@@ -1,0 +1,32 @@
+alerts.csv:
+alert_id,alert_type,alert_status,description,created_at,updated_at,risk_value,provider_id,patient_id,hospital_id,procedure_id,material_id,medication_id,hospitalization_id,is_anomaly,anomaly_percentage
+
+
+materials.csv:
+  material_id,code,name,category,standard_cost,actual_cost,provider_id,patient_id,procedure_id,date_used,quantity,batch_number,is_imported,similar_usage_24h
+
+
+hospitalizations.csv:
+  hospitalization_id,patient_id,hospital_id,admission_date,discharge_date,readmission,days_since_last_discharge,department,is_icu,total_cost,expected_cost,length_of_stay,expected_length_of_stay
+
+
+patients.csv:
+ patient_id,name,age,gender,plan_type,enrollment_date,risk_score
+
+
+procedures.csv:
+  procedure_id,code,name,standard_cost,actual_cost,protocol_id,is_within_protocol,provider_id,patient_id,hospitalization_id,date_performed,authorization_id,is_repeated
+
+
+protocols.csv:
+  protocol_id,name,description,expected_procedures,expected_materials,expected_medications,expected_hospitalization_days,diagnosis_code,version,last_updated
+
+
+providers.csv:
+  provider_id,name,type,specialty,contract_id,active,historical_alert_count
+
+
+recommendations.csv:
+  recommendation_id,patient_id,provider_id,hospital_id,score,comments,date_submitted,service_type,would_recommend
+
+

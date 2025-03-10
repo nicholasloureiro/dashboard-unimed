@@ -1,0 +1,61 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Streamlit
+.streamlit/
+
+# Virtual Environment
+venv/
+ENV/
+env/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Logs
+*.log
+pandasai.log
+
+# Temporary files
+temp_*
+*.temp
+temp_chart.html
+temp_chart.png
+
+# Database
+# Don't ignore the database file since it needs to be deployed
+# medical_data.db
+
+# Cache
+cache/
+__pycache__/
+.cache/
+cache_db.db
+
+# OS specific
+.DS_Store
+Thumbs.db
+*.csv
+
