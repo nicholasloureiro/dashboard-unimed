@@ -597,21 +597,24 @@ if api_key:
             </div>
       """, unsafe_allow_html=True)
         
-        try:
-            # Modify the query to ensure Plotly is used for charts
-            if "gráfico" in user_query.lower() or "grafico" in user_query.lower() or "visualização" in user_query.lower() or "visualizacao" in user_query.lower():
-                user_query += " Use Plotly para criar o gráfico com a cor #009C6E como cor principal e retorne o código dentro de tags <plotly></plotly>"
-            
-            # Enviar pergunta ao PandasAI
-            # Com o StreamlitResponse configurado, ele já irá renderizar o resultado apropriadamente
-            smart_df.chat(f"""Responda em portugues: {user_query}
+        with st.spinner("Processando sua pergunta..."):
+            try:
+                # Modify the query to ensure Plotly is used for charts
+                if "gráfico" in st.session_state.query.lower() or "grafico" in st.session_state.query.lower() or "visualização" in st.session_state.query.lower() or "visualizacao" in st.session_state.query.lower():
+                    st.session_state.query += " Use Plotly para criar o gráfico com a cor #009C6E como cor principal e retorne o código dentro de tags <plotly></plotly>"
+                
+                # Enviar pergunta ao PandasAI
+                # Com o StreamlitResponse configurado, ele já irá renderizar o resultado apropriadamente
+                smart_df.chat(f"""Responda em portugues: {st.session_state.query}
 - **Para valores financeiros**, utilize a formatação BRL, exemplo: R$ 11.279.589,75
 """)
-            # Não precisamos fazer nada adicional aqui, pois o parser já trata a exibição
-        except Exception as e:
-            st.error(f"Erro ao processar a pergunta: {str(e)}")
+                # Não precisamos fazer nada adicional aqui, pois o parser já trata a exibição
+            except Exception as e:
+                st.error(f"Erro ao processar a pergunta: {str(e)}")
             
         st.markdown("</div></div>", unsafe_allow_html=True)
+        
+        # Reset the execute_query flag after processing
         st.session_state.execute_query = False
 else:
     st.error("API Key não encontrada. Configure a variável de ambiente OPENAI_API_KEY.")
