@@ -497,15 +497,10 @@ if 'execute_query' not in st.session_state:
 # Define the example questions
 example_questions = [
     "Me mostre onde eu estou perdendo mais receita",
-    "Liste os usuários que geram fraudes de maior valor",
+    "Liste os usuários que geram alertas de maior valor",
     "Faça um gráfico com os 5 provedores com mais alertas"
 ]
 
-# Function to set query and trigger execution
-def set_query_and_execute(question, idx):
-    st.session_state.query = question
-    st.session_state.selected_question = idx
-    st.session_state.execute_query = True
 
 # Search bar
 col1, col2 = st.columns([6, 1])
@@ -523,6 +518,8 @@ with col1:
     # Update session state when input changes directly
     if user_query != st.session_state.query:
         st.session_state.query = user_query
+        # Reset selected question if user manually types something new
+        st.session_state.selected_question = None
 
 # Place the button in the second column
 with col2:
@@ -588,6 +585,7 @@ if api_key:
         "response_parser": StreamlitResponse  # Adicionando o novo parser
     })
     
+    
     if user_query and (search_button or st.session_state.execute_query):
         st.markdown("""
         <div class="section">
@@ -601,7 +599,7 @@ if api_key:
             try:
                 # Modify the query to ensure Plotly is used for charts
                 if "gráfico" in st.session_state.query.lower() or "grafico" in st.session_state.query.lower() or "visualização" in st.session_state.query.lower() or "visualizacao" in st.session_state.query.lower():
-                    st.session_state.query += " Use Plotly para criar o gráfico com a cor #009C6E como cor principal e retorne o código dentro de tags <plotly></plotly>"
+                    st.session_state.query += " Use Plotly para criar o gráfico com a cor #009C6E como cor principal e retorne o código dentro de tags <plotly></plotly>. Certifique-se de que o gráfico seja completo e contenha todos os elementos necessários."
                 
                 # Enviar pergunta ao PandasAI
                 # Com o StreamlitResponse configurado, ele já irá renderizar o resultado apropriadamente
